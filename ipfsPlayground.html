@@ -1,0 +1,45 @@
+<html>
+<head>
+    <title>IPFS playground</title>
+    <script src="buffer.js"></script>
+    <script src="web3.min.js"></script>
+    <script src="ipfs.js"></script>
+    <script src="ipfsStorage.js"></script>
+    <script>
+
+    if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+    } else {
+        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+    }
+    var storage = makeStorage(web3);
+
+    var dataUrl;
+    function onStoredData(generatedUrl) {
+        dataUrl = generatedUrl;
+        console.log(dataUrl);
+    }
+
+    var data = "hohoho";
+    function testStore(_data) {
+        storage.store(_data || data, onStoredData);
+    }
+
+    var storedData;
+    function onRetrievedData(_data) {
+        storedData = _data;
+        console.log("onRetrievedData: " + storedData);
+    }
+
+    function testRetrieve() {
+        storage.retrieve(dataUrl, onRetrievedData);
+    }
+    </script>
+</head>
+<body>
+    <p>The JavaScript console is your friend.</p>
+    <ul>Usage:
+        <li><code>testStore(data)<code>: save data in IPFS</li>
+        <li><code>testRetrieve()<code>: retrieve previous stored data from IPFS</li>
+    </ul>
+</body>
