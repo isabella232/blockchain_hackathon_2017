@@ -1,5 +1,5 @@
 window.makeStorage = function (ipfsHost, ipfsAPIPort, ipfsWebPort) {
-  var Buffer = window.buffer.Buffer;
+  var Buffer = IpfsApi().Buffer;
   var ipfs = IpfsApi(ipfsHost, ipfsAPIPort);
 
   function toBuffer (ab) {

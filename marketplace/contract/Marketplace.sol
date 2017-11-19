@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 contract Marketplace {
-  event CreateClassifiedAd(uint indexed id, uint time, uint expires, uint indexed area, uint indexed category, string data);
+  event CreateClassifiedAd(uint indexed id, uint time, uint indexed area, uint indexed category, string identity, string data);
   event RemoveClassifiedAd(uint indexed id, uint time);
   event ExtraClassifiedAdData(uint indexed id, string contentType, string data);
 
@@ -18,11 +18,11 @@ contract Marketplace {
     }
   }
 
-  function createClassifiedAd(uint16 _area, uint16 _category, string _data) public {
+  function createClassifiedAd(uint16 _area, uint16 _category, string _identity, string _data) public {
     numberOfClassifiedAds += 1;
     uint id = numberOfClassifiedAds;
     ownersOfClassifiedAds[id] = msg.sender;
-    CreateClassifiedAd(id, block.timestamp, block.timestamp + 3 days, _area, _category, _data);
+    CreateClassifiedAd(id, block.timestamp, _area, _category, _identity, _data);
   }
 
   function extraClassifiedAdData(uint _id, string _contentType, string _data) isOwnerOfClassifiedAd(_id) public {
