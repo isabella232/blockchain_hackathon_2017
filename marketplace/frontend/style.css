@@ -94,3 +94,10 @@ textarea {
   width: 300px;
 }
 
+img {
+  width: 500px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  display: block;
+  border: 1px dotted black;
+}

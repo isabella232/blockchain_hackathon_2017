@@ -3,6 +3,7 @@ var ipfsHost    = "localhost";
 var ipfsAPIPort = "5001";
 var ipfsWebPort = "8080";
 var IMAGES = [];
+var FILTERS = [];
 
 // Helpers
 function byId (id) {
@@ -11,6 +12,21 @@ function byId (id) {
 
 function isZeroAddress (addr) {
   return addr === "0x0000000000000000000000000000000000000000";
+}
+
+function getShhIdentity (cb) {
+  var storageKey = "shhid:" + account;
+  var id = localStorage.getItem(storageKey);
+
+  if (id) {
+    return cb(null, id);
+  }
+
+  web3.shh.newKeyPair(function (err, key) {
+    if (err) { return cb(err); }
+    localStorage.setItem(storageKey, key);
+    cb(null, key);
+  });
 }
 
 function formatDate (date) {
@@ -71,11 +87,24 @@ window.onload = function () {
     web3.eth.getAccounts(function (err, accounts) {
       if (err) { return showError(err); }
 
-      window.contract = web3.eth.contract(ABI).at(ADDRESS);
-      window.account = accounts[0];
-      window.storage = makeStorage(ipfsHost, ipfsAPIPort, ipfsWebPort);
+			window.contract = web3.eth.contract(ABI).at(ADDRESS);
+			window.account = accounts[0];
+			window.storage = makeStorage(ipfsHost, ipfsAPIPort, ipfsWebPort);
 
-      startup();
+      getShhIdentity(function (err, shhKey) {
+        if (err) { return showError(err); }
+
+        window.shhKey = shhKey;
+        web3.shh.getPublicKey(shhKey, function (err, pubKey) {
+          if (err) { return showError(err); }
+          console.log(pubKey);
+          var filterID = web3.shh.newMessageFilter({type: "asym", privateKeyId: shhKey});
+          FILTERS.push(filterID);
+          pollMessages(pubKey);
+        });
+
+        startup();
+      });
     });
   }
 };
@@ -83,6 +112,31 @@ window.onload = function () {
 function startup () {
   wireCreateAdForm();
   loadEvents();
+}
+
+function sendMessage (pubKey, msg, cb) {
+  console.log(pubKey);
+  cb = cb || function () { };
+  web3.shh.post({ttl: 7, payload: web3.fromAscii(msg), powTarget: 2.01, powTime: 2, pubKey: pubKey}, cb);
+}
+
+function showMessage (data) {
+  var msg = web3.toAscii(data.payload);
+  blockScreen(function (blockContent, done) {
+    blockContent.textContent = msg;
+    setTimeout(function () {
+      done();
+    }, 5000);
+  });
+}
+
+function pollMessages (pubKey) {
+  FILTERS.forEach(function (filterID) {
+    filterID.watch(function (err, data) {
+      if (err) { return showError(err); }
+      showMessage(data);
+    });
+  });
 }
 
 // Modals
@@ -159,7 +213,7 @@ function createEvent (res) {
     div.appendChild(addr);
     div.appendChild(buttons);
 
-    h4.textContent = [area, category, formatDate(date)].join(" - ");
+    h4.textContent = id.toNumber() + ". " + [area, category, formatDate(date)].join(" - ");
 
     pre.textContent = "Loading ...";
     storage.get(data, function (err, content) {
@@ -186,6 +240,13 @@ function createEvent (res) {
       extra.type = "file";
       extra.onchange = function (e) { handleExtraData(e, id); };
       buttons.appendChild(extra);
+    } else {
+      var ping = document.createElement("button");
+      ping.textContent = "Contact";
+      buttons.appendChild(ping);
+      ping.onclick = function (e) {
+        sendMessage(res.args.identity, account + " would like to contact you about ad " + id.toNumber());
+      };
     }
   });
 }
@@ -307,12 +368,16 @@ function handleCreateAd (e) {
     blockContent.textContent = "Uploading to IPFS ...";
     storage.put(content, function (err, hash) {
       if (err) { showError(err); return done(); }
-      contract.createClassifiedAd(area, category, hash, {from: account}, function (err, txHash) {
+      web3.shh.getPublicKey(shhKey, function (err, pubKey) {
         if (err) { showError(err); return done(); }
-        blockContent.textContent = "Waiting on transaction to be mined ...";
-        waitOnTX(txHash, function (err) {
+        contract.createClassifiedAd(area, category, pubKey, hash, {from: account}, function (err, txHash) {
+          console.log(pubKey);
           if (err) { showError(err); return done(); }
-          done();
+          blockContent.textContent = "Waiting on transaction to be mined ...";
+          waitOnTX(txHash, function (err) {
+            if (err) { showError(err); return done(); }
+            done();
+          });
         });
       });
     });
