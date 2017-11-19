@@ -4,9 +4,13 @@
     "ADDRESS": false,
     "AREAS": false,
     "CATEGORIES": false,
+    "VIEW": false,
     "web3": false,
     "Web3": false,
     "contract": false,
+    "IpfsApi": false,
+    "makeStorage": false,
+    "storage": false,
     "account": false
   },
   "env": {

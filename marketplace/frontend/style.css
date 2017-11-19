@@ -1,0 +1,96 @@
+* {
+  box-sizing: border-box;
+}
+
+tr {
+  border: 1px solid black;
+}
+
+#list {
+  display: none;
+}
+
+hr {
+  margin: 20px 0;
+}
+
+#title {
+  text-align: center;
+}
+
+#create {
+  width: 300px;
+  margin: 0 auto;
+}
+
+select {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+textarea {
+  display: block;
+  height: 200px;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+#commit {
+  display: block;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.container {
+  width: 600px;
+  margin: 0 auto;
+}
+
+.ad {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.ad-imgs > * {
+  margin-bottom: 10px;
+}
+
+.ad-addr {
+  margin-bottom: 10px;
+}
+
+.ad-buttons > * {
+  margin-right: 10px;
+}
+
+.screen-block {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+}
+
+.screen-block-content {
+  background-color: white;
+  height: 200px;
+  margin: 0 auto;
+  margin-top: 75px;
+  padding: 20px;
+  width: 400px;
+}
+
+#error-content {
+  background-color: red;
+  color: white;
+  font-family: sans-serif;
+  font-weight: 600;
+  height: 150px;
+  width: 300px;
+}
+

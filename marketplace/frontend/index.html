@@ -1,37 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-tr {
-  border: 1px solid black;
-}
-</style>
+<link href="style.css" rel="stylesheet">
 </head>
 <body>
-  <table>
-    <tbody id="output">
-      <tr>
-        <th>Id</th>
-        <th>Area</th>
-        <th>Category</th>
-        <th>Data</th>
-        <th></th>
-      </tr>
-    </tbody>
-  </table>
-  <form>
-    <select id="area"></select>
-    <br>
-    <select id="category"></select>
-    <br>
-    <textarea id="content"></textarea>
-    <br>
-    <button id="create">New Ad</button>
-  </form>
-  <script src="web3.min.js"></script>
-  <script src="areas.js"></script>
-  <script src="categories.js"></script>
-  <script src="contract.js"></script>
+  <div class="container">
+    <h1 id="title">Classified Ads</h1>
+    <hr>
+    <div id="create">
+      <select id="area"></select>
+      <select id="category"></select>
+      <textarea id="content" placeholder="Description"></textarea>
+      <button id="commit">New Ad</button>
+    </div>
+    <hr>
+    <div id="ads">
+    </div>
+  </div>
+
+  <div id="block" class="screen-block">
+    <div id="block-content" class="screen-block-content"></div>
+  </div>
+
+  <div id="error" class="screen-block">
+    <div id="error-content" class="screen-block-content"></div>
+  </div>
+
+  <script src="libs/web3.min.js"></script>
+  <script src="libs/buffer.js"></script>
+  <script src="libs/ipfs.js"></script>
+  <script src="libs/ipfsStorage.js"></script>
+  <script src="globals/areas.js"></script>
+  <script src="globals/categories.js"></script>
+  <script src="globals/contract.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

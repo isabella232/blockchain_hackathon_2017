@@ -1,9 +1,9 @@
 pragma solidity ^0.4.11;
 
 contract Marketplace {
-  event CreateClassifiedAd(uint id, uint time, uint expires, uint indexed area, uint indexed category, string data);
-  event RemoveClassifiedAd(uint id, uint time);
-  event ExtraClassifiedAdData(uint id, string contentType, string data);
+  event CreateClassifiedAd(uint indexed id, uint time, uint expires, uint indexed area, uint indexed category, string data);
+  event RemoveClassifiedAd(uint indexed id, uint time);
+  event ExtraClassifiedAdData(uint indexed id, string contentType, string data);
 
   uint public numberOfClassifiedAds = 0;
   mapping (uint => address) public ownersOfClassifiedAds;
